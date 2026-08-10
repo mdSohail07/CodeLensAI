@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 
 function Workspace() {
@@ -43,10 +44,7 @@ function Workspace() {
 
       setResult(data.result);
 
-      // =========================
-      // SAVE ANALYSIS TO HISTORY
-      // =========================
-
+      // Save analysis to history
       const oldHistory =
         JSON.parse(
           localStorage.getItem("codeHistory")
@@ -54,9 +52,9 @@ function Workspace() {
 
       const newAnalysis = {
         id: Date.now(),
-        code: code,
-        language: language,
-        feature: feature,
+        code,
+        language,
+        feature,
         result: data.result,
         date: new Date().toLocaleString(),
       };
@@ -71,7 +69,7 @@ function Workspace() {
         JSON.stringify(updatedHistory)
       );
 
-      // Update Dashboard immediately
+      // Update dashboard
       window.dispatchEvent(
         new Event("historyUpdated")
       );
@@ -84,12 +82,9 @@ function Workspace() {
   };
 
   return (
-    <div className="workspace-page">
+    <div>
 
-      {/* =========================
-          SIDEBAR
-      ========================= */}
-
+      {/* Sidebar */}
       <aside className="sidebar">
 
         <div className="sidebar-logo">
@@ -98,48 +93,42 @@ function Workspace() {
 
         <nav className="sidebar-nav">
 
-          <a
-            href="/dashboard"
+          <Link
+            to="/dashboard"
             className="sidebar-link"
           >
             <span>▣</span>
             Dashboard
-          </a>
+          </Link>
 
-          <a
-            href="/workspace"
+          <Link
+            to="/workspace"
             className="sidebar-link active"
           >
             <span>⌘</span>
             Code Explainer
-          </a>
+          </Link>
 
-          <a
-            href="/history"
+          <Link
+            to="/history"
             className="sidebar-link"
           >
             <span>◷</span>
             History
-          </a>
+          </Link>
 
         </nav>
 
       </aside>
 
 
-      {/* =========================
-          MAIN
-      ========================= */}
-
+      {/* Main */}
       <main className="workspace-main">
 
-        {/* Header */}
         <header className="workspace-header">
 
           <div>
-            <h1>
-              Code Explainer
-            </h1>
+            <h1>Code Explainer</h1>
 
             <p>
               Understand, debug and improve your
@@ -150,10 +139,7 @@ function Workspace() {
         </header>
 
 
-        {/* =========================
-            FEATURE TABS
-        ========================= */}
-
+        {/* Feature Tabs */}
         <div className="feature-tabs">
 
           {[
@@ -166,9 +152,7 @@ function Workspace() {
             <button
               key={item}
               className={`feature-tab ${
-                feature === item
-                  ? "active"
-                  : ""
+                feature === item ? "active" : ""
               }`}
               onClick={() => setFeature(item)}
             >
@@ -180,10 +164,7 @@ function Workspace() {
         </div>
 
 
-        {/* =========================
-            EDITOR AREA
-        ========================= */}
-
+        {/* Editor */}
         <section className="editor-container">
 
           {/* Code Input */}
@@ -191,9 +172,7 @@ function Workspace() {
 
             <div className="panel-header">
 
-              <span>
-                Your Code
-              </span>
+              <span>Your Code</span>
 
               <select
                 value={language}
@@ -235,9 +214,7 @@ function Workspace() {
 
             <div className="panel-header">
 
-              <span>
-                AI Result
-              </span>
+              <span>AI Result</span>
 
               {loading && (
                 <span className="loading-text">
@@ -250,7 +227,6 @@ function Workspace() {
 
             <div className="result-content">
 
-              {/* Empty */}
               {!result && !loading && (
 
                 <div className="empty-result">
@@ -273,7 +249,6 @@ function Workspace() {
               )}
 
 
-              {/* Loading */}
               {loading && (
 
                 <div className="empty-result">
@@ -294,7 +269,6 @@ function Workspace() {
               )}
 
 
-              {/* Result */}
               {result && !loading && (
 
                 <article className="markdown-result">
@@ -314,10 +288,7 @@ function Workspace() {
         </section>
 
 
-        {/* =========================
-            ANALYZE BUTTON
-        ========================= */}
-
+        {/* Analyze Button */}
         <button
           className="analyze-button workspace-button"
           onClick={analyzeCode}

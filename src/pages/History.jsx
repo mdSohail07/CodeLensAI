@@ -1,24 +1,34 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 
 function History() {
   const [history, setHistory] = useState([]);
 
-  // =========================
-  // LOAD HISTORY
-  // =========================
-
   useEffect(() => {
-    const savedHistory =
-      JSON.parse(localStorage.getItem("codeHistory")) || [];
+    const loadHistory = () => {
+      const savedHistory =
+        JSON.parse(
+          localStorage.getItem("codeHistory")
+        ) || [];
 
-    setHistory(savedHistory);
+      setHistory(savedHistory);
+    };
+
+    loadHistory();
+
+    window.addEventListener(
+      "historyUpdated",
+      loadHistory
+    );
+
+    return () => {
+      window.removeEventListener(
+        "historyUpdated",
+        loadHistory
+      );
+    };
   }, []);
-
-
-  // =========================
-  // DELETE ONE ITEM
-  // =========================
 
   const deleteItem = (id) => {
     const updatedHistory = history.filter(
@@ -32,36 +42,24 @@ function History() {
       JSON.stringify(updatedHistory)
     );
 
-    // Update Dashboard
     window.dispatchEvent(
       new Event("historyUpdated")
     );
   };
-
-
-  // =========================
-  // CLEAR HISTORY
-  // =========================
 
   const clearHistory = () => {
     localStorage.removeItem("codeHistory");
-
     setHistory([]);
 
-    // Update Dashboard
     window.dispatchEvent(
       new Event("historyUpdated")
     );
   };
 
-
   return (
-    <div className="workspace-page">
+    <div>
 
-      {/* =========================
-          SIDEBAR
-      ========================= */}
-
+      {/* Sidebar */}
       <aside className="sidebar">
 
         <div className="sidebar-logo">
@@ -70,56 +68,49 @@ function History() {
 
         <nav className="sidebar-nav">
 
-          <a
-            href="/dashboard"
+          <Link
+            to="/dashboard"
             className="sidebar-link"
           >
             <span>▣</span>
             Dashboard
-          </a>
+          </Link>
 
-          <a
-            href="/workspace"
+          <Link
+            to="/workspace"
             className="sidebar-link"
           >
             <span>⌘</span>
             Code Explainer
-          </a>
+          </Link>
 
-          <a
-            href="/history"
+          <Link
+            to="/history"
             className="sidebar-link active"
           >
             <span>◷</span>
             History
-          </a>
+          </Link>
 
         </nav>
 
       </aside>
 
 
-      {/* =========================
-          MAIN
-      ========================= */}
-
+      {/* Main */}
       <main className="workspace-main">
 
-        {/* Header */}
         <header className="workspace-header">
 
           <div>
 
-            <h1>
-              History
-            </h1>
+            <h1>History</h1>
 
             <p>
               View your previous code analyses.
             </p>
 
           </div>
-
 
           {history.length > 0 && (
 
@@ -135,10 +126,7 @@ function History() {
         </header>
 
 
-        {/* =========================
-            EMPTY STATE
-        ========================= */}
-
+        {/* Empty */}
         {history.length === 0 ? (
 
           <div className="history-empty">
@@ -152,25 +140,22 @@ function History() {
             </h2>
 
             <p>
-              Your previous code analyses
-              will appear here.
+              Your previous code analyses will
+              appear here.
             </p>
 
-            <a
-              href="/workspace"
+            <Link
+              to="/workspace"
               className="analyze-button"
             >
               Analyze Code →
-            </a>
+            </Link>
 
           </div>
 
         ) : (
 
-          /* =========================
-             HISTORY LIST
-          ========================= */
-
+          /* History List */
           <div className="history-list">
 
             {history.map((item) => (
@@ -180,7 +165,7 @@ function History() {
                 key={item.id}
               >
 
-                {/* Card Header */}
+                {/* Header */}
                 <div className="history-card-header">
 
                   <div>
@@ -194,7 +179,6 @@ function History() {
                     </span>
 
                   </div>
-
 
                   <button
                     className="delete-history-button"
