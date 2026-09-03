@@ -20,7 +20,7 @@ function Workspace() {
 
     try {
       const response = await fetch(
-        "https://codelensai-p4kp.onrender.com/api/analyze",
+        "https://codelens-p6yx.onrender.com/api/analyze",
         {
           method: "POST",
           headers: {
